@@ -66,12 +66,12 @@ class GA():
         j=0
         for i in range(nGenes):
             #if ((child.contains_gene(parent2.gene(i), nGenes)) is not True):
-                print(child.genes[j] is None, " ", child.genes[j])
+                #print(child.genes[j] is None, " ", child.genes[j])
                 if (child.genes[j] is None):
                     child.genes[j] = parent2.genes[i]
-                    print("entrou")
+                    #print("entrou")
                 j = j+1
-        print(child.genes)
+        #print(child.genes)
         child.generate_cost(Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
         return (child)
 

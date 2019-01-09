@@ -22,7 +22,7 @@ class Chromosome():
 
             ##Calculates the shortest distance beetween the next path and the actual coordinate,
             ##and gets the next coordinate(the one with the shortest distance)
-            print('x: ', x, "genes: ", self.genes)
+            #print('x: ', x, "genes: ", self.genes)
 
             for n in range(len(Matrix_inf[x].coordinates)):
                 coordB = Matrix_inf[x].coordinates[n]
