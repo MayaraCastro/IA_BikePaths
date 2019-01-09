@@ -5,6 +5,9 @@ class Chromosome():
     genes=[]
     cost=0
     fitness=0.0
+    def __init__(self):
+        self.genes = []
+
     def generate_cost(self,Matrix_inf, IniCoordinate, FinalCoordinate): #TODO mudar o calculo do custo
         self.cost=0
         x=self.genes[0]
