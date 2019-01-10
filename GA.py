@@ -37,7 +37,7 @@ class GA():
         for i in range(1, size_pop, 1):
             parent1 = self.selection(pop, size_pop)
             parent2 = self.selection(pop, size_pop)
-
+#por taxa de crossover
             newpop.chromosomes.append(self.crossover(parent1, parent2, nGenes, Matrix_inf))
 
         for i in range(1, size_pop, 1):
@@ -74,6 +74,7 @@ class GA():
         return (child)
 
     def mutation(self, chromosome, nGenes, MRate, Matrix_inf): #Mutation tipo Swap
+        #por pra cada gene
         if (random.randint(0, 100) <= MRate):
             position1 = random.randint(0, nGenes - 1)
             position2 = random.randint(0, nGenes - 1)
