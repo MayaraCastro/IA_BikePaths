@@ -21,11 +21,11 @@ class GA():
         for i in range(nGenarations):
             pop = self.create_new_generation(pop, size_pop, Matrix_inf, nGenes, MRate)
             fittest = pop.Fittest(size_pop)
-            print("Path: ", fittest.genes, "Distance:", fittest.cost)
+            print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
         fittest = pop.Fittest(size_pop)
         ##print solution
         print("\nSolution:")
-        print("Path: ", fittest.genes, "Distance:", fittest.cost)
+        print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
 
     def create_new_generation(self, pop, size_pop, Matrix_inf, nGenes, MRate):
         newpop = Population(size_pop)
@@ -45,7 +45,7 @@ class GA():
 
         return (newpop)
 
-    def crossover(self, parent1, parent2, nGenes, Matrix_inf):
+    def crossover(self, parent1, parent2, nGenes, Matrix_inf): # crossover de 2 pontos
         position1 = random.randint(0, nGenes - 1)
         position2 = random.randint(0, nGenes - 1)
 
@@ -63,19 +63,17 @@ class GA():
             else:
                 child.genes.append(None)
 
-        j=0
+        #j=0
         for i in range(nGenes):
-            #if ((child.contains_gene(parent2.gene(i), nGenes)) is not True):
-                #print(child.genes[j] is None, " ", child.genes[j])
-                if (child.genes[j] is None):
-                    child.genes[j] = parent2.genes[i]
-                    #print("entrou")
-                j = j+1
-        #print(child.genes)
+
+                if (child.genes[i] is None):
+                    child.genes[i] = parent2.genes[i]
+               # j = j+1
+
         child.generate_cost(Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
         return (child)
 
-    def mutation(self, chromosome, nGenes, MRate, Matrix_inf):
+    def mutation(self, chromosome, nGenes, MRate, Matrix_inf): #Mutation tipo Swap
         if (random.randint(0, 100) <= MRate):
             position1 = random.randint(0, nGenes - 1)
             position2 = random.randint(0, nGenes - 1)
@@ -86,11 +84,11 @@ class GA():
             chromosome.generate_cost(Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
         return (chromosome)
 
-    def selection(self, pop, nGenes):
-        fitpop = Population(nGenes)
-        quantity = random.randint(1, nGenes)
+    def selection(self, pop, npop): #Torneio
+        fitpop = Population(npop)
+        quantity = random.randint(1, npop)
         for i in range(quantity):
-            add = random.randint(0, nGenes - 1)
+            add = random.randint(0, npop - 1)
             fitpop.chromosomes.append(pop.chromosomes[add])
         fit = fitpop.Fittest(quantity)
         return (fit)
