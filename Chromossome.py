@@ -2,7 +2,7 @@ import random
 import math
 
 class Chromosome():
-    genes=[]
+    genes = None
     cost=0
     fitness=0.0
     def __init__(self):

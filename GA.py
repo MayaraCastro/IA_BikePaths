@@ -4,50 +4,73 @@ from Population import Population
 
 
 class GA():
+    # Problem configuration
     IniCoordinate = None
     FinalCoordinate = None
+    Matrix_inf = None
+    size_pop = 0
+    nGenes = 0
 
-    def __init__(self, IniCoordinate, FinalCoordinate):
+    # Parameters
+    MRate = 0
+    CRate = 0
+    nGenerations = 0
+
+    def __init__(self, IniCoordinate, FinalCoordinate, size_pop, Matrix_inf, nGenes):
+        #Problem configuration
         self.IniCoordinate = IniCoordinate
         self.FinalCoordinate = FinalCoordinate
+        self.Matrix_inf = Matrix_inf
+        self.size_pop = size_pop
+        self.nGenes = nGenes
 
 
-    def Evolution(self, size_pop, Matrix_inf, nGenes, MRate, nGenarations):
+    def Evolution(self, MRate, CRate, nGenerations):
+
+        self.MRate = MRate
+        self.CRate = CRate
+        self.nGenerations = nGenerations
+        print(self.nGenerations)
         # creates the initial population
-        pop = Population(size_pop)
-        pop.create_new(Matrix_inf, size_pop, nGenes, True, self.IniCoordinate, self.FinalCoordinate)
+        pop = Population(self.size_pop)
+        pop.create_new(self.Matrix_inf, self.size_pop, self.nGenes, True, self.IniCoordinate, self.FinalCoordinate)
 
         ##evolves the initial population in n generations
-        for i in range(nGenarations):
-            pop = self.create_new_generation(pop, size_pop, Matrix_inf, nGenes, MRate)
-            fittest = pop.Fittest(size_pop)
+        for i in range(self.nGenerations):
+            pop = self.create_new_generation(pop)
+            fittest = pop.Fittest(self.size_pop)
             print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
-        fittest = pop.Fittest(size_pop)
+
+        fittest = pop.Fittest(self.size_pop)
+
         ##print solution
         print("\nSolution:")
         print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
 
-    def create_new_generation(self, pop, size_pop, Matrix_inf, nGenes, MRate):
-        newpop = Population(size_pop)
+    def create_new_generation(self, pop):
+        newpop = Population(self.size_pop)
         newpop.chromosomes = []
 
         # Elitismo
-        newpop.chromosomes.append(pop.Fittest(size_pop))
+        newpop.chromosomes.append(pop.Fittest(self.size_pop))
 
-        for i in range(1, size_pop, 1):
-            parent1 = self.selection(pop, size_pop)
-            parent2 = self.selection(pop, size_pop)
-#por taxa de crossover
-            newpop.chromosomes.append(self.crossover(parent1, parent2, nGenes, Matrix_inf))
+        for i in range(1, self.size_pop, 1):
+            parent1 = self.selection(pop)
+            parent2 = self.selection(pop)
 
-        for i in range(1, size_pop, 1):
-            newpop.chromosomes[i] = self.mutation(newpop.chromosomes[i], nGenes, MRate, Matrix_inf)
+            if (random.randint(0, 100) <= self.CRate):
+                newpop.chromosomes.append(self.crossover(parent1, parent2))
+            else:
+                newpop.chromosomes.append(parent1)
+
+        for i in range(1, self.size_pop, 1):
+            newpop.chromosomes[i] = self.mutation(newpop.chromosomes[i])
 
         return (newpop)
 
-    def crossover(self, parent1, parent2, nGenes, Matrix_inf): # crossover de 2 pontos
-        position1 = random.randint(0, nGenes - 1)
-        position2 = random.randint(0, nGenes - 1)
+    def crossover(self, parent1, parent2): # crossover de 2 pontos
+        position1 = random.randint(0, self.nGenes - 1)
+        position2 = random.randint(0, self.nGenes - 1)
 
         child = Chromosome()
         child.genes = []
@@ -57,39 +80,42 @@ class GA():
             position1 = position2
             position2 = maior
 
-        for i in range(nGenes):
+        for i in range(self.nGenes):
             if (position1 <= i <= position2):
                 child.genes.append(parent1.genes[i])
             else:
                 child.genes.append(None)
 
         #j=0
-        for i in range(nGenes):
+        for i in range(self.nGenes):
 
                 if (child.genes[i] is None):
                     child.genes[i] = parent2.genes[i]
                # j = j+1
 
-        child.generate_cost(Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
+        child.generate_cost(self.Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
         return (child)
 
-    def mutation(self, chromosome, nGenes, MRate, Matrix_inf): #Mutation tipo Swap
-        #por pra cada gene
-        if (random.randint(0, 100) <= MRate):
-            position1 = random.randint(0, nGenes - 1)
-            position2 = random.randint(0, nGenes - 1)
+    def mutation(self, chromosome): #Mutation tipo Swap
 
-            getGene = chromosome.genes[position1]
-            chromosome.genes[position1] = chromosome.genes[position2]
-            chromosome.genes[position2] = getGene
-            chromosome.generate_cost(Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
+        for i in range(self.nGenes): #for each position of the cromosome test the occurance of the mutation
+
+            if (random.randint(0, 100) <= self.MRate):
+                position1 = i
+                position2 = random.randint(0, self.nGenes - 1)
+
+                getGene = chromosome.genes[position1]
+                chromosome.genes[position1] = chromosome.genes[position2]
+                chromosome.genes[position2] = getGene
+                chromosome.generate_cost(self.Matrix_inf, self.IniCoordinate, self.FinalCoordinate)
+
         return (chromosome)
 
-    def selection(self, pop, npop): #Torneio
-        fitpop = Population(npop)
-        quantity = random.randint(1, npop)
+    def selection(self, pop): #Torneio
+        fitpop = Population(self.size_pop)
+        quantity = random.randint(1, self.size_pop)
         for i in range(quantity):
-            add = random.randint(0, npop - 1)
+            add = random.randint(0, self.size_pop - 1)
             fitpop.chromosomes.append(pop.chromosomes[add])
         fit = fitpop.Fittest(quantity)
         return (fit)
