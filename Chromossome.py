@@ -27,7 +27,8 @@ class Chromosome():
             for n in range(len(Matrix_inf[x].coordinates)):
                 coordB = Matrix_inf[x].coordinates[n]
 
-                Matrix_Dist.append([self.dist_euclidiana(coordA, coordB), coordB])
+                #Matrix_Dist.append([self.dist_euclidiana(coordA, coordB), coordB])
+                Matrix_Dist.append([self.dist_em_metros(coordA, coordB), coordB])
 
             Matrix_Dist.sort()
             coordA = Matrix_Dist[0][1]
@@ -35,8 +36,9 @@ class Chromosome():
             self.cost = self.cost + Matrix_Dist[0][0]
             x = i
 
-        self.cost = self.cost + self.dist_euclidiana(coordA, FinalCoordinate) # Adds the distance of the last path to the final point
+        #self.cost = self.cost + self.dist_euclidiana(coordA, FinalCoordinate) # Adds the distance of the last path to the final point
             ##
+        self.cost = self.cost + self.dist_em_metros(coordA, FinalCoordinate)
 
 
         self.generate_fitness()
@@ -68,3 +70,22 @@ class Chromosome():
         for i in range(dim):
             soma += math.pow(v1[i] - v2[i], 2)
         return math.sqrt(soma)
+
+    def dist_em_metros(self, v1, v2):
+        d2r = 0.017453292519943295769236;
+
+        dlong = (v1[0] - v2[0]) * d2r;
+
+        dlat = (v1[1] - v2[1]) * d2r;
+
+        temp_sin = math.sin(dlat / 2.0);
+
+        temp_cos = math.cos(v1[1] * d2r);
+
+        temp_sin2 =  math.sin(dlong / 2.0);
+
+        a = (temp_sin * temp_sin) + (temp_cos * temp_cos) * (temp_sin2 * temp_sin2);
+
+        c = 2.0 *  math.atan2( math.sqrt(a),  math.sqrt(1.0 - a));
+
+        return 6368.1 * c;

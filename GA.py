@@ -16,6 +16,11 @@ class GA():
     CRate = 0
     nGenerations = 0
 
+    #Results
+    resultado_fitness = None
+    resultado_generation = None
+    fittest_cost = 0
+
     def __init__(self, IniCoordinate, FinalCoordinate, size_pop, Matrix_inf, nGenes):
         #Problem configuration
         self.IniCoordinate = IniCoordinate
@@ -23,29 +28,40 @@ class GA():
         self.Matrix_inf = Matrix_inf
         self.size_pop = size_pop
         self.nGenes = nGenes
-
+        self.resultado_fitness = []
+        self.resultado_generation = []
 
     def Evolution(self, MRate, CRate, nGenerations):
 
         self.MRate = MRate
         self.CRate = CRate
         self.nGenerations = nGenerations
-        print(self.nGenerations)
+
         # creates the initial population
         pop = Population(self.size_pop)
         pop.create_new(self.Matrix_inf, self.size_pop, self.nGenes, True, self.IniCoordinate, self.FinalCoordinate)
 
+        fittest = pop.Fittest(self.size_pop)
+
+        print("Path: ", fittest.genes, "Cost:", fittest.cost, "Fitness:", fittest.fitness)
+        self.resultado_fitness.append(fittest.fitness)
+        self.resultado_generation.append(0)
+
         ##evolves the initial population in n generations
-        for i in range(self.nGenerations):
+        for i in range(1,self.nGenerations):
             pop = self.create_new_generation(pop)
             fittest = pop.Fittest(self.size_pop)
             print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
+
+            self.resultado_fitness.append(fittest.fitness)
+            self.resultado_generation.append(i)
 
         fittest = pop.Fittest(self.size_pop)
 
         ##print solution
         print("\nSolution:")
         print("Path: ", fittest.genes, "Cost:", fittest.cost,"Fitness:", fittest.fitness)
+        self.fittest_cost = fittest.cost
 
     def create_new_generation(self, pop):
         newpop = Population(self.size_pop)

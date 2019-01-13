@@ -1,6 +1,9 @@
+import csv
+
 from scipy.io import arff
 import pandas as pd
 from BikePath import BikePath
+
 
 class PrepareData():
     bikePaths = None
@@ -21,3 +24,8 @@ class PrepareData():
             self.bikePaths[int(id)].addCoordinates(df.at[i, 'Longitude'], df.at[i, 'Latitude'])
 
         df.head()
+
+    # Salvar em arquivos
+    def writeCSV(self,nameFile, row):
+        fileCSV = csv.writer(open(nameFile, "a"))
+        fileCSV.writerow(row)
