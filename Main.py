@@ -32,11 +32,12 @@ MRate= 5 #mutation rate
 CRate = 75 #crossover rate
 nGenerations=200 #quantity of generations
 
-IniCoordinate = [-34.91687,-8.09554]
-FinalCoordinate = [-34.91687,-8.09554]#[-34.90999,-8.0335]
+IniCoordinate = [-34.873742,-8.049938] #11
+FinalCoordinate = [-34.88354,-8.0434]#9
 
 BikeRoute=GA(IniCoordinate, FinalCoordinate, size_pop,data.bikePaths,nGenes)
-
+BikeRoute.Evolution(MRate, CRate, nGenerations)
+'''
 sum = 0
 times = 30
 fittests = []
@@ -54,3 +55,4 @@ configuracao = 4
 
 min_max_avg_std = configuracao,min,max,avg,std
 data.writeCSV('100Gen.csv', min_max_avg_std)
+'''
